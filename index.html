@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Command &amp; Conquer: RED ALERT — Web Tactical Command</title>
+  <link rel="stylesheet" href="src/styles.css" />
+</head>
+<body class="faction-theme-allied">
+
+  <!-- ====================================================================
+       SCREEN 1: MAIN MENU (#menu-screen)
+       ==================================================================== -->
+  <section id="menu-screen" class="screen active" aria-label="Main Menu">
+    <div class="crt-scanlines"></div>
+    <div class="menu-backdrop-grid"></div>
+
+    <div class="menu-shell">
+      <!-- Iconic Red Alert Title Banner -->
+      <header class="menu-header">
+        <div class="menu-classified-stamp">TOP SECRET // EINSTEIN TEMPORAL DIRECTIVE // 1956</div>
+        <h1 class="menu-logo">
+          <span class="logo-sub">COMMAND &amp; CONQUER</span>
+          <span class="logo-main">RED ALERT</span>
+          <span class="logo-edition">WEB TACTICAL COMMAND</span>
+        </h1>
+      </header>
+
+      <div class="menu-body">
+        <!-- Left Column: Faction Selector Cards -->
+        <div class="menu-panel faction-panel">
+          <div class="panel-header">
+            <span class="panel-led"></span>
+            <h2>1. SELECT ALLEGIANCE</h2>
+          </div>
+          <div class="faction-cards">
+            <button type="button" id="faction-allied" class="faction-card selected" data-faction="allied">
+              <div class="faction-emblem">🦅</div>
+              <div class="faction-info">
+                <div class="faction-title">ALLIED FORCES</div>
+                <div class="faction-bonus">+15% Unit Speed &amp; Chrono Tech</div>
+                <p class="faction-desc">High-mobility armor, precision artillery, Tanya commando ops, Pillboxes, Turrets &amp; the Chronosphere.</p>
+              </div>
+              <div class="faction-status-tag">SELECTED</div>
+            </button>
+
+            <button type="button" id="faction-soviet" class="faction-card" data-faction="soviet">
+              <div class="faction-emblem">☭</div>
+              <div class="faction-info">
+                <div class="faction-title">SOVIET UNION</div>
+                <div class="faction-bonus">+15% Armor &amp; Tesla/Heavy Tech</div>
+                <p class="faction-desc">Twin-barreled Heavy &amp; Mammoth Tanks, V2 Rocket Launchers, high-voltage Tesla Coils &amp; the Iron Curtain.</p>
+              </div>
+              <div class="faction-status-tag">STANDBY</div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Right Column: Theater of Operations (Campaign vs Skirmish) -->
+        <div class="menu-panel operations-panel">
+          <div class="panel-header">
+            <span class="panel-led"></span>
+            <h2>2. THEATER OF OPERATIONS</h2>
+          </div>
+
+          <!-- Mode Tabs -->
+          <div class="mode-tabs" role="tablist">
+            <button type="button" id="tab-campaign" class="mode-tab active" data-mode="campaign" role="tab" aria-selected="true">
+              CAMPAIGN OPERATIONS
+            </button>
+            <button type="button" id="tab-skirmish" class="mode-tab" data-mode="skirmish" role="tab" aria-selected="false">
+              CUSTOM SKIRMISH
+            </button>
+          </div>
+
+          <!-- Campaign Operations Panel -->
+          <div id="campaign-panel" class="mode-content active">
+            <div id="mission-list" class="mission-list">
+              <!-- Populated dynamically from RA.DATA.MISSIONS -->
+            </div>
+          </div>
+
+          <!-- Custom Skirmish Panel -->
+          <div id="skirmish-panel" class="mode-content">
+            <div class="skirmish-form">
+              <div class="form-row">
+                <label for="skirmish-difficulty">AI COMMANDER DIFFICULTY</label>
+                <div class="segmented-control" id="skirmish-difficulty">
+                  <button type="button" class="seg-btn" data-difficulty="easy">EASY</button>
+                  <button type="button" class="seg-btn active" data-difficulty="medium">MEDIUM</button>
+                  <button type="button" class="seg-btn" data-difficulty="hard">HARD</button>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <label for="skirmish-credits">STARTING CREDITS</label>
+                <div class="segmented-control" id="skirmish-credits">
+                  <button type="button" class="seg-btn" data-credits="5000">$5,000</button>
+                  <button type="button" class="seg-btn active" data-credits="8000">$8,000</button>
+                  <button type="button" class="seg-btn" data-credits="15000">$15,000</button>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <label for="skirmish-fog">TACTICAL FOG OF WAR</label>
+                <div class="segmented-control" id="skirmish-fog">
+                  <button type="button" class="seg-btn active" data-fog="true">ENABLED (SHROUD)</button>
+                  <button type="button" class="seg-btn" data-fog="false">REVEALED MAP</button>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <label for="skirmish-theater">MAP THEATER</label>
+                <div class="segmented-control" id="skirmish-theater">
+                  <button type="button" class="seg-btn active" data-theater="temperate">TEMPERATE</button>
+                  <button type="button" class="seg-btn" data-theater="snow">SNOW</button>
+                  <button type="button" class="seg-btn" data-theater="desert">DESERT</button>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <label for="skirmish-ai-count">AI OPPONENTS</label>
+                <div class="segmented-control" id="skirmish-ai-count">
+                  <button type="button" class="seg-btn active" data-ai-count="1">1 AI</button>
+                  <button type="button" class="seg-btn" data-ai-count="2">2 AI</button>
+                  <button type="button" class="seg-btn" data-ai-count="3">3 AI</button>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <label for="skirmish-ai-doctrine">AI DOCTRINE</label>
+                <div class="segmented-control" id="skirmish-ai-doctrine">
+                  <button type="button" class="seg-btn active" data-doctrine="balanced">BALANCED</button>
+                  <button type="button" class="seg-btn" data-doctrine="rush">RUSH</button>
+                  <button type="button" class="seg-btn" data-doctrine="turtle">TURTLE</button>
+                  <button type="button" class="seg-btn" data-doctrine="air_naval">AIR &amp; NAVAL</button>
+                </div>
+              </div>
+
+              <div class="skirmish-summary-box">
+                <div class="summary-title">SKIRMISH BRIEF</div>
+                <p>Deploy a Mobile Construction Vehicle (MCV) and strike force into contested ore &amp; gem valleys. Expand your base, build air &amp; naval armadas, unlock superweapons, and annihilate all opposing headquarters.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer Action Bar -->
+      <footer class="menu-footer">
+        <button type="button" id="btn-controls-manual" class="ra-btn btn-secondary">
+          <span class="btn-icon">⌨</span> TACTICAL MANUAL / CONTROLS
+        </button>
+        <div class="menu-cta-group">
+          <button type="button" id="btn-instant-skirmish" class="ra-btn btn-amber">
+            <span class="btn-icon">⚡</span> INSTANT SKIRMISH
+          </button>
+          <button type="button" id="btn-launch-briefing" class="ra-btn btn-primary">
+            <span class="btn-icon">▶</span> LAUNCH BRIEFING
+          </button>
+        </div>
+      </footer>
+    </div>
+  </section>
+
+  <!-- ====================================================================
+       SCREEN 2: MISSION BRIEFING (#briefing-screen)
+       ==================================================================== -->
+  <section id="briefing-screen" class="screen" aria-label="Mission Briefing">
+    <div class="crt-scanlines"></div>
+    <div class="briefing-shell">
+      <header class="briefing-header">
+        <div class="briefing-insignia-wrap">
+          <span id="briefing-insignia" class="briefing-insignia">🦅</span>
+          <div>
+            <div id="briefing-faction-name" class="briefing-faction-tag">ALLIED TACTICAL COMMAND</div>
+            <h1 id="briefing-title" class="briefing-title">OPERATION: IRON DAWN</h1>
+            <div id="briefing-subtitle" class="briefing-subtitle">SECTOR 7 // EASTERN FRONTIER</div>
+          </div>
+        </div>
+        <div class="briefing-meta-readout">
+          <div>LOCATION: <span id="briefing-location">SILESIAN RIVER VALLEY</span></div>
+          <div>THREAT LEVEL: <span id="briefing-difficulty">MODERATE</span></div>
+          <div>FUNDS ALLOCATED: <span id="briefing-credits">$5,000</span></div>
+        </div>
+      </header>
+
+      <div class="briefing-body">
+        <!-- Animated Teletype Transmission -->
+        <div class="briefing-terminal-panel">
+          <div class="terminal-bar">
+            <span class="terminal-dot red"></span>
+            <span class="terminal-dot amber"></span>
+            <span class="terminal-dot green"></span>
+            <span class="terminal-title">EVA ENCRYPTED TELETYPE TRANSMISSION // EYES ONLY</span>
+          </div>
+          <div id="briefing-text" class="briefing-teletype">
+            <!-- Populated with teletype animation -->
+          </div>
+        </div>
+
+        <!-- Right Intel Column: Objectives & Tactical Intel -->
+        <div class="briefing-side-panel">
+          <div class="intel-card">
+            <div class="intel-card-header">MISSION OBJECTIVES</div>
+            <ol id="briefing-objectives" class="briefing-objectives-list">
+              <!-- Populated dynamically -->
+            </ol>
+          </div>
+
+          <div class="intel-card">
+            <div class="intel-card-header">TACTICAL INTEL SUMMARY</div>
+            <div id="briefing-intel" class="briefing-intel-summary">
+              <!-- Populated dynamically -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="briefing-footer">
+        <button type="button" id="btn-back-menu" class="ra-btn btn-secondary">
+          ◀ BACK TO MENU
+        </button>
+        <button type="button" id="btn-deploy-battlefield" class="ra-btn btn-primary btn-large">
+          DEPLOY TO BATTLEFIELD ▶
+        </button>
+      </footer>
+    </div>
+  </section>
+
+  <!-- ====================================================================
+       SCREEN 3: ACTIVE GAME VIEW (#game-screen)
+       ==================================================================== -->
+  <section id="game-screen" class="screen" aria-label="Tactical Battlefield">
+    <!-- Top Tactical HUD Bar -->
+    <header id="top-tactical-bar" class="top-tactical-bar">
+      <div class="hud-readouts">
+        <div class="hud-metric credits-metric" title="Available Ore &amp; Gem Credits">
+          <span class="metric-label">CREDITS</span>
+          <span id="credits-display" class="metric-value phosphor-green">$5,000</span>
+        </div>
+
+        <div class="hud-metric power-metric" title="Base Power Output vs Consumption">
+          <span class="metric-label">POWER</span>
+          <span id="power-display" class="metric-value phosphor-amber">100 / 40</span>
+        </div>
+
+        <div class="hud-metric timer-metric" title="Mission Elapsed Time">
+          <span id="mission-title-display" class="metric-label">OP: IRON DAWN</span>
+          <span id="timer-display" class="metric-value">00:00</span>
+        </div>
+      </div>
+
+      <!-- EVA Status Ticker -->
+      <div class="eva-ticker-box">
+        <span class="eva-badge">EVA</span>
+        <span id="eva-message" class="eva-message-text">BATTLEFIELD CONTROL ONLINE.</span>
+      </div>
+
+      <!-- Quick-Action Buttons -->
+      <div class="hud-quick-actions">
+        <button type="button" id="btn-top-repair" class="hud-tool-btn" title="Repair Structure [R]">
+          <span class="tool-icon">🔧</span> <span class="tool-text">Repair</span> <kbd>R</kbd>
+        </button>
+        <button type="button" id="btn-top-sell" class="hud-tool-btn" title="Sell Structure for 50% Refund [X]">
+          <span class="tool-icon">💲</span> <span class="tool-text">Sell</span> <kbd>X</kbd>
+        </button>
+        <button type="button" id="btn-top-deploy" class="hud-tool-btn" title="Deploy Selected MCV into Construction Yard [D]">
+          <span class="tool-icon">🏗</span> <span class="tool-text">Deploy MCV</span> <kbd>D</kbd>
+        </button>
+        <button type="button" id="btn-top-fog" class="hud-tool-btn" title="Toggle Fog of War [F]">
+          <span class="tool-icon">👁</span> <span class="tool-text">Fog</span> <kbd>F</kbd>
+        </button>
+        <button type="button" id="btn-top-audio" class="hud-tool-btn" title="Toggle Audio / Music [M]">
+          <span class="tool-icon">🔊</span> <span class="tool-text">Audio</span> <kbd>M</kbd>
+        </button>
+        <button type="button" id="btn-top-pause" class="hud-tool-btn hud-btn-warn" title="Mission Objectives &amp; Pause Menu [ESC]">
+          <span class="tool-icon">☰</span> <span class="tool-text">Pause</span> <kbd>ESC</kbd>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Workspace: Battlefield Canvas + Right Command Sidebar -->
+    <div class="game-main-workspace">
+      <!-- Left/Center Battlefield Area -->
+      <div id="battlefield-container" class="battlefield-container">
+        <canvas id="battlefield-canvas" width="960" height="720"></canvas>
+
+        <!-- Floating Notification Banner -->
+        <div id="battlefield-notification" class="battlefield-notification hidden" role="status" aria-live="polite"></div>
+
+        <!-- Active Cursor Mode Indicator Pill -->
+        <div id="cursor-mode-badge" class="cursor-mode-badge hidden">
+          <span id="cursor-mode-text">PLACEMENT MODE — LEFT-CLICK TO PLACE, RIGHT-CLICK TO CANCEL</span>
+        </div>
+
+        <!-- Bottom Unit Selection Bar / Command Card -->
+        <div id="bottom-command-bar" class="bottom-command-bar">
+          <div class="cmd-bar-group">
+            <button type="button" id="cmd-move" class="cmd-bar-btn" title="Right-Click terrain to Move selected units (Shift+R-Click to queue waypoints)">
+              <span class="cmd-icon">➤</span>
+              <span class="cmd-label">Move</span>
+              <kbd>R-Click</kbd>
+            </button>
+            <button type="button" id="cmd-attack-move" class="cmd-bar-btn" title="Attack-Move: move and engage any enemies along the way [A]">
+              <span class="cmd-icon">⚔</span>
+              <span class="cmd-label">Attack-Move</span>
+              <kbd>A</kbd>
+            </button>
+            <button type="button" id="cmd-patrol" class="cmd-bar-btn" title="Patrol: oscillate between waypoints and engage enemies [P]">
+              <span class="cmd-icon">⇄</span>
+              <span class="cmd-label">Patrol</span>
+              <kbd>P</kbd>
+            </button>
+            <button type="button" id="cmd-stop" class="cmd-bar-btn" title="Stop all current unit orders [S]">
+              <span class="cmd-icon">⏹</span>
+              <span class="cmd-label">Stop</span>
+              <kbd>S</kbd>
+            </button>
+            <button type="button" id="cmd-deploy" class="cmd-bar-btn" title="Deploy MCV / Chrono Blink / M.A.D. Seismic Charge [D]">
+              <span class="cmd-icon">🏗</span>
+              <span class="cmd-label">Deploy</span>
+              <kbd>D</kbd>
+            </button>
+            <button type="button" id="cmd-primary" class="cmd-bar-btn" title="Designate selected production building as PRIMARY exit">
+              <span class="cmd-icon">★</span>
+              <span class="cmd-label">Primary</span>
+              <kbd>PRI</kbd>
+            </button>
+            <button type="button" id="cmd-scatter" class="cmd-bar-btn" title="Scatter selected units to dodge artillery/splash [G]">
+              <span class="cmd-icon">✥</span>
+              <span class="cmd-label">Scatter</span>
+              <kbd>G</kbd>
+            </button>
+            <button type="button" id="cmd-home" class="cmd-bar-btn" title="Jump to Radar Alert [Space] or Construction Yard [H]">
+              <span class="cmd-icon">🎯</span>
+              <span class="cmd-label">Base</span>
+              <kbd>Space</kbd>
+            </button>
+          </div>
+          <div id="stance-selector" class="stance-selector" title="Unit Combat Stance">
+            <button type="button" class="stance-btn" data-stance="aggressive" title="Aggressive: Scan wide &amp; pursue enemies indefinitely">AGGR</button>
+            <button type="button" class="stance-btn active" data-stance="guard" title="Guard: Engage nearby enemies &amp; return to post">GUARD</button>
+            <button type="button" class="stance-btn" data-stance="holdGround" title="Hold Position: Fire in range without moving">HOLD POS</button>
+            <button type="button" class="stance-btn" data-stance="holdFire" title="Hold Fire: Only attack when explicitly ordered">HOLD FIRE</button>
+          </div>
+          <div id="control-groups-bar" class="control-groups-bar" title="Ctrl+1..9 to assign squad, 1..9 to recall">
+            <!-- Control group badges 1..5 rendered dynamically -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Classic Right-Hand Command Sidebar (300px wide) -->
+      <aside id="command-sidebar" class="command-sidebar">
+        <!-- 1. Radar Minimap Frame -->
+        <div class="sidebar-section radar-section">
+          <div class="sidebar-section-header">
+            <span>TACTICAL RADAR</span>
+            <span id="radar-status-badge" class="radar-badge online">RADAR ACTIVE</span>
+          </div>
+          <div class="minimap-frame">
+            <canvas id="minimap-canvas" width="256" height="256"></canvas>
+          </div>
+        </div>
+
+        <!-- 2. Power Meter + Production Tabs & Grid -->
+        <div class="sidebar-section production-section">
+          <!-- Vertical Power Meter Bar alongside Production Tabs + Grid -->
+          <div class="production-layout">
+            <div class="power-meter-column" title="Power Balance Bar">
+              <div class="power-bolt-icon">⚡</div>
+              <div id="power-meter-bar" class="power-meter-track">
+                <div id="power-meter-fill" class="power-meter-fill" style="height: 60%;"></div>
+                <div id="power-meter-demand" class="power-meter-demand" style="bottom: 30%;"></div>
+              </div>
+              <div id="power-status-tag" class="power-status-tag">OK</div>
+            </div>
+
+            <div class="production-main-column">
+              <!-- 4-Tab Production Selector -->
+              <div class="production-tabs" role="tablist">
+                <button type="button" class="prod-tab active" data-tab="building" title="Base Structures">
+                  <span class="tab-icon">🏭</span>
+                  <span class="tab-name">Struct</span>
+                </button>
+                <button type="button" class="prod-tab" data-tab="defense" title="Base Defenses">
+                  <span class="tab-icon">🛡</span>
+                  <span class="tab-name">Defense</span>
+                </button>
+                <button type="button" class="prod-tab" data-tab="infantry" title="Infantry Training">
+                  <span class="tab-icon">🪖</span>
+                  <span class="tab-name">Infantry</span>
+                </button>
+                <button type="button" class="prod-tab" data-tab="vehicle" title="Armor, Air &amp; Naval Units">
+                  <span class="tab-icon">🚜</span>
+                  <span class="tab-name">Vehicles</span>
+                </button>
+              </div>
+
+              <!-- Production Grid -->
+              <div id="production-grid" class="production-grid">
+                <!-- Populated dynamically with buildable cards -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Superweapons Panel -->
+        <div class="sidebar-section superweapons-section">
+          <div class="sidebar-section-header">
+            <span>SPECIAL WEAPONS</span>
+            <span class="sw-sub">STRATEGIC</span>
+          </div>
+          <div id="superweapons-panel" class="superweapons-panel">
+            <!-- Chronosphere, Iron Curtain, Nuclear Strike cards -->
+          </div>
+        </div>
+
+        <!-- 4. Selected Entity Inspector -->
+        <div class="sidebar-section inspector-section">
+          <div class="sidebar-section-header">
+            <span>UNIT / STRUCTURE INTEL</span>
+            <span id="inspector-count-badge" class="inspector-badge">NONE</span>
+          </div>
+          <div id="selection-inspector" class="selection-inspector">
+            <div class="inspector-empty">Select units or structures on the battlefield to inspect telemetry and issue tactical commands.</div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ====================================================================
+       MODAL 1: PAUSE / OBJECTIVES MODAL (#pause-modal)
+       ==================================================================== -->
+  <div id="pause-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="pause-modal-title">
+    <div class="modal-card">
+      <div class="modal-header">
+        <span class="panel-led"></span>
+        <h2 id="pause-modal-title">TACTICAL COMMAND PAUSED</h2>
+      </div>
+
+      <div class="modal-body">
+        <div class="pause-objectives-box">
+          <h3>CURRENT MISSION OBJECTIVES</h3>
+          <ol id="pause-objectives-list" class="pause-objectives-list"></ol>
+        </div>
+
+        <div class="pause-audio-box">
+          <h3>AUDIO &amp; TELEMETRY CONTROLS</h3>
+          <div class="slider-row">
+            <label for="slider-sfx-volume">SFX VOLUME</label>
+            <input type="range" id="slider-sfx-volume" min="0" max="100" value="75" />
+            <span id="sfx-volume-label">75%</span>
+          </div>
+          <div class="slider-row">
+            <label for="slider-music-volume">MUSIC VOLUME</label>
+            <input type="range" id="slider-music-volume" min="0" max="100" value="45" />
+            <span id="music-volume-label">45%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer pause-actions-stack">
+        <button type="button" id="btn-resume-game" class="ra-btn btn-primary">
+          ▶ RESUME BATTLEFIELD [ESC]
+        </button>
+        <div class="pause-save-grid">
+          <button type="button" id="btn-quicksave" class="ra-btn btn-secondary">
+            💾 QUICKSAVE [F5]
+          </button>
+          <button type="button" id="btn-quickload" class="ra-btn btn-secondary">
+            📂 QUICKLOAD [F9]
+          </button>
+          <button type="button" id="btn-export-save" class="ra-btn btn-secondary">
+            ⬇ EXPORT SAVE JSON
+          </button>
+          <button type="button" id="btn-import-save" class="ra-btn btn-secondary">
+            ⬆ IMPORT SAVE JSON
+          </button>
+          <input type="file" id="input-import-save" accept=".json,application/json" class="hidden" />
+        </div>
+        <button type="button" id="btn-pause-controls" class="ra-btn btn-secondary">
+          ⌨ TACTICAL CONTROLS GUIDE
+        </button>
+        <button type="button" id="btn-restart-mission" class="ra-btn btn-amber">
+          ↻ RESTART OPERATION
+        </button>
+        <button type="button" id="btn-abort-mission" class="ra-btn btn-danger">
+          ✖ SURRENDER / ABORT TO MAIN MENU
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL 2: TACTICAL MANUAL / CONTROLS GUIDE (#controls-modal)
+       ==================================================================== -->
+  <div id="controls-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="controls-modal-title">
+    <div class="modal-card modal-wide">
+      <div class="modal-header">
+        <span class="panel-led"></span>
+        <h2 id="controls-modal-title">FIELD COMMAND MANUAL &amp; HOTKEYS</h2>
+      </div>
+
+      <div class="modal-body controls-grid">
+        <div class="controls-block">
+          <h3>🖱 MOUSE COMMANDS</h3>
+          <ul>
+            <li><strong>Left-Click Unit/Structure:</strong> Select entity</li>
+            <li><strong>Left-Click + Drag Box:</strong> Box-select friendly combat units</li>
+            <li><strong>Double Left-Click Unit/Factory:</strong> Select same type / Set Primary Building</li>
+            <li><strong>Right-Click Terrain:</strong> Move selected units (or set Rally Point on Factory)</li>
+            <li><strong>Shift + Right-Click:</strong> Queue sequential Waypoint orders</li>
+            <li><strong>Right-Click Enemy:</strong> Attack target (or Capture/Infiltrate with Engineer/Spy/Thief)</li>
+            <li><strong>Right-Click Bridge Hut:</strong> Repair demolished bridge with Engineer</li>
+            <li><strong>Mouse Wheel:</strong> Smooth tactical camera zoom (0.6x – 1.5x)</li>
+          </ul>
+        </div>
+
+        <div class="controls-block">
+          <h3>⌨ KEYBOARD SHORTCUTS</h3>
+          <ul>
+            <li><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> / <kbd>Arrows</kbd>: Pan Battlefield Camera</li>
+            <li><kbd>Space</kbd> / <kbd>H</kbd>: Jump to Radar Alert / Center on Construction Yard</li>
+            <li><kbd>D</kbd>: Deploy MCV / Chrono Tank Blink / M.A.D. Seismic Blast</li>
+            <li><kbd>A</kbd> / <kbd>P</kbd>: Attack-Move / Patrol cursor mode</li>
+            <li><kbd>S</kbd> / <kbd>G</kbd>: Stop / Scatter selected units</li>
+            <li><kbd>R</kbd> / <kbd>X</kbd>: Toggle Structure Repair / Sell cursor (50% refund)</li>
+            <li><kbd>F5</kbd> / <kbd>F9</kbd>: Quicksave / Quickload battle state</li>
+            <li><kbd>Ctrl + 1..9</kbd> / <kbd>1..9</kbd>: Assign / Recall Control Group</li>
+            <li><kbd>F</kbd> / <kbd>M</kbd> / <kbd>ESC</kbd>: Toggle Fog / Toggle Audio / Pause</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" id="btn-close-controls" class="ra-btn btn-primary">
+          ACKNOWLEDGE &amp; CLOSE
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL 3: VICTORY / DEFEAT DEBRIEFING SCREEN (#gameover-screen)
+       ==================================================================== -->
+  <section id="gameover-screen" class="screen" aria-label="Mission Debriefing">
+    <div class="crt-scanlines"></div>
+    <div class="gameover-shell">
+      <header class="gameover-header">
+        <div id="gameover-kicker" class="gameover-kicker">AFTER-ACTION TELEMETRY REPORT</div>
+        <h1 id="gameover-banner" class="gameover-banner victory">MISSION ACCOMPLISHED</h1>
+        <p id="gameover-subtitle" class="gameover-subtitle">All hostile forces in the sector have been neutralized.</p>
+      </header>
+
+      <div class="gameover-body">
+        <div class="rank-badge-panel">
+          <div class="rank-label">COMMANDER EVALUATION RANK</div>
+          <div id="gameover-rank" class="rank-value">SUPREME MARSHAL (S-RANK)</div>
+        </div>
+
+        <table class="debrief-stats-table" aria-label="Post-Game Statistics">
+          <tbody>
+            <tr>
+              <th>TIME ELAPSED</th>
+              <td id="stat-time">00:00</td>
+            </tr>
+            <tr>
+              <th>UNITS TRAINED</th>
+              <td id="stat-units-built">0</td>
+            </tr>
+            <tr>
+              <th>ENEMY UNITS DESTROYED</th>
+              <td id="stat-units-killed">0</td>
+            </tr>
+            <tr>
+              <th>FRIENDLY UNITS LOST</th>
+              <td id="stat-units-lost">0</td>
+            </tr>
+            <tr>
+              <th>STRUCTURES CONSTRUCTED</th>
+              <td id="stat-buildings-built">0</td>
+            </tr>
+            <tr>
+              <th>ENEMY STRUCTURES DESTROYED</th>
+              <td id="stat-buildings-destroyed">0</td>
+            </tr>
+            <tr>
+              <th>ORE &amp; GEM CREDITS HARVESTED</th>
+              <td id="stat-credits-harvested">$0</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <footer class="gameover-footer">
+        <button type="button" id="btn-gameover-menu" class="ra-btn btn-secondary">
+          ◀ MAIN MENU
+        </button>
+        <button type="button" id="btn-replay-mission" class="ra-btn btn-amber">
+          ↻ REPLAY MISSION
+        </button>
+        <button type="button" id="btn-next-mission" class="ra-btn btn-primary">
+          NEXT MISSION ▶
+        </button>
+      </footer>
+    </div>
+  </section>
+
+  <!-- Scripts loaded in exact dependency order -->
+  <script src="src/data.js"></script>
+  <script src="src/audio.js"></script>
+  <script src="src/map.js"></script>
+  <script src="src/entities.js"></script>
+  <script src="src/engine.js"></script>
+  <script src="src/renderer.js"></script>
+  <script src="src/main.js"></script>
+</body>
+</html>

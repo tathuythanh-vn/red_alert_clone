@@ -1,0 +1,26 @@
+# OS & Editor Artifacts
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*~
+.vscode/
+.idea/
+
+# Dependencies & Logs
+node_modules/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment & Local Config
+.env
+.env.*
+
+# Temporary & Scratch Verification Files
+tmp/
+temp/
+test-*.js
+verify*.js
+*.tmp
